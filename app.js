@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   let sesionActual = CATALOGO[0];
+  let sesionesFiltradas = [];
   let consultasIA = 0;
   const MAX_IA = 15;
   let tareaRevisadaIA = false;
@@ -45,14 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectSesion = document.getElementById('select-sesion');
   const inputUsuario = document.getElementById('input-usuario');
 
-  // Clave dinámica por sesión y usuario: ¡así nunca se pierde ni se pisa el progreso entre sesiones!
   function obtenerStorageKey() {
     const user = (inputUsuario.value || 'anonimo').trim().toLowerCase();
     const id = sesionActual ? sesionActual.id_unico : 'default';
     return `mooc_v1_${id}_${user}`;
   }
 
-  // Carga el catálogo desde Google Sheets al abrir la app
   async function inicializarCatalogo() {
     try {
       const res = await fetch('/api/ia?accion=catalogo');
@@ -67,24 +66,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function poblarSelectCursos() {
-    const cursosUnicos = [...new Set(CATALOGO.map(s => s.curso))];
+    const cursosPorDefecto = ['Aprendizaje Cooperativo', 'Cultura de Pensamiento', 'Mapas Mentales'];
+    const cursosCatalogo = CATALOGO.map(s => s.curso).filter(Boolean);
+    const cursosUnicos = [...new Set([...cursosCatalogo, ...cursosPorDefecto])];
     selectCurso.innerHTML = cursosUnicos.map(c => `<option value="${c}">${c}</option>`).join('');
     poblarSelectSesiones();
   }
 
   function poblarSelectSesiones() {
     const cursoElegido = selectCurso.value;
-    const sesionesCurso = CATALOGO.filter(s => s.curso === cursoElegido);
-    selectSesion.innerHTML = sesionesCurso.map(s => `<option value="${s.id_unico}">${s.num_sesion} · ${s.titulo}</option>`).join('');
-    if (sesionesCurso.length > 0) {
-      renderizarSesion(sesionesCurso[0]);
+    sesionesFiltradas = CATALOGO.filter(s => s.curso === cursoElegido);
+    // Usamos el índice del array para que aunque dos sesiones tengan el mismo ID siempre cargue la elegida
+    selectSesion.innerHTML = sesionesFiltradas.map((s, idx) => `<option value="${idx}">${s.num_sesion} · ${s.titulo}</option>`).join('');
+    if (sesionesFiltradas.length > 0) {
+      renderizarSesion(sesionesFiltradas[0]);
     }
   }
 
   selectCurso.addEventListener('change', poblarSelectSesiones);
+
   selectSesion.addEventListener('change', () => {
-    const encontrada = CATALOGO.find(s => s.id_unico === selectSesion.value);
-    if (encontrada) renderizarSesion(encontrada);
+    const idx = parseInt(selectSesion.value, 10);
+    if (sesionesFiltradas[idx]) {
+      renderizarSesion(sesionesFiltradas[idx]);
+    }
   });
 
   function renderizarSesion(s) {
@@ -100,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
     actualizarProgreso();
   }
 
-  // Navegación entre zonas
   function irAZona(idZona) {
     const el = document.getElementById(idZona);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -131,13 +135,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('btn-cargar-sesion').addEventListener('click', () => {
-    cargarLocal();
+    const idx = parseInt(selectSesion.value, 10);
+    if (sesionesFiltradas[idx]) {
+      renderizarSesion(sesionesFiltradas[idx]);
+    }
     const estado = document.getElementById('estado-conexion');
-    if (estado) estado.textContent = `✅ ${sesionActual.id_unico} lista. Tu avance se guardará automáticamente.`;
+    if (estado) estado.textContent = `✅ ${sesionActual.titulo} cargada. Tu avance se guarda automáticamente.`;
     irAZona('zona-1');
   });
 
-  // Recuperar desde el Excel de Google Drive si el alumno cambió de ordenador
   document.getElementById('btn-recuperar-nube').addEventListener('click', async () => {
     const usuario = inputUsuario.value.trim();
     const estado = document.getElementById('estado-conexion');
@@ -179,7 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Botones de llamada a la IA
   document.querySelectorAll('.btn-ia').forEach(btn => {
     btn.addEventListener('click', async () => {
       const fase = btn.dataset.fase;
@@ -234,7 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Guardado definitivo en el Excel de Google Drive
   document.getElementById('btn-guardar-nube').addEventListener('click', async () => {
     guardarLocal();
     const msg = document.getElementById('mensaje-entrega');
@@ -255,12 +259,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     try {
-      await fetch('/api/ia', {
+      const res = await fetch('/api/ia', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      if (msg) msg.textContent = '✅ ¡Sesión registrada correctamente en el Excel!';
+      const data = await res.json();
+      if (res.ok && !data.error) {
+        if (msg) msg.textContent = '✅ ¡Sesión registrada correctamente en el Excel!';
+      } else {
+        if (msg) msg.textContent = `⚠️ Guardado en local (${data.error || 'revisa Excel'})`;
+      }
     } catch (e) {
       if (msg) msg.textContent = '✅ Guardado en copia local.';
     }
@@ -271,7 +280,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.print();
   });
 
-  // Panel Admin Docente
   const btnToggle = document.getElementById('btn-toggle-docente');
   const vistaProfe = document.getElementById('vista-profesor');
   const vistaAlumno = document.getElementById('vista-alumno');
@@ -287,28 +295,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const nueva = {
       accion: 'crear_sesion',
       pin: document.getElementById('admin-pin').value,
-      id_unico: document.getElementById('admin-id').value.trim(),
+      id_unico: (document.getElementById('admin-id').value || 'COOP-S1').trim(),
       curso: document.getElementById('admin-curso').value,
-      num_sesion: document.getElementById('admin-num').value.trim(),
-      titulo: document.getElementById('admin-titulo').value.trim(),
+      num_sesion: (document.getElementById('admin-num').value || 'Sesión 1').trim(),
+      titulo: (document.getElementById('admin-titulo').value || 'Sin título').trim(),
       teoria: document.getElementById('admin-teoria').value.trim(),
       multimedia_html: document.getElementById('admin-multimedia').value.trim(),
       consigna_tarea: document.getElementById('admin-tarea').value.trim(),
       reto_gunawardena: document.getElementById('admin-gunawardena').value.trim(),
       padlet_html: document.getElementById('admin-padlet').value.trim()
     };
-    if (estado) estado.textContent = 'Guardando en Google Sheets...';
-    const res = await fetch('/api/ia', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(nueva)
-    });
-    if (res.ok) {
-      CATALOGO.push(nueva);
-      poblarSelectCursos();
-      if (estado) estado.textContent = `✅ Sesión ${nueva.id_unico} añadida al Excel.`;
-    } else {
-      if (estado) estado.textContent = '⚠️ Error o PIN incorrecto.';
+
+    if (estado) estado.textContent = '⏳ Guardando en Google Sheets...';
+
+    try {
+      const res = await fetch('/api/ia', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(nueva)
+      });
+      const data = await res.json();
+
+      if (res.ok && !data.error) {
+        // Si ya existía una sesión con ese ID (ej. la de prueba), la reemplaza
+        CATALOGO = CATALOGO.filter(s => s.id_unico !== nueva.id_unico);
+        CATALOGO.push(nueva);
+        poblarSelectCursos();
+        selectCurso.value = nueva.curso;
+        poblarSelectSesiones();
+        const nuevoIdx = sesionesFiltradas.findIndex(s => s.id_unico === nueva.id_unico);
+        if (nuevoIdx >= 0) selectSesion.value = String(nuevoIdx);
+        renderizarSesion(nueva);
+        if (estado) estado.textContent = `✅ Sesión ${nueva.id_unico} guardada en el Excel y activa.`;
+      } else {
+        if (estado) estado.textContent = `⚠️ Error: ${data.error || 'No se pudo guardar en el Excel'}`;
+      }
+    } catch (err) {
+      if (estado) estado.textContent = '❌ Error de red al conectar con el servidor.';
     }
   });
 
@@ -341,7 +364,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const uGuardado = localStorage.getItem('mooc_ultimo_usuario');
     if (uGuardado && !inputUsuario.value) inputUsuario.value = uGuardado;
 
-    // Limpiar campos antes de cargar la nueva sesión seleccionada
     ['texto-reflexion', 'texto-verificacion', 'texto-tarea', 'texto-padlet'].forEach(id => {
       document.getElementById(id).value = '';
     });
@@ -365,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('texto-padlet').value = d.padlet || '';
         if (d.fb_soc) mostrarRespuestaIA('SOCRATICO', d.fb_soc);
         if (d.fb_tar) mostrarRespuestaIA('TAREA', d.fb_tar);
-        if (d.fb_gun) mostrarRespuestaIA('GUNAWARDENA', d.fb_gun);
+        if (d.fb_gun) mostrarRespuestaIA('GUNAWARDENA', d.fb_gunawardena || d.fb_gun);
       } catch (e) {}
     }
     document.getElementById('contador-ia').textContent = consultasIA;
