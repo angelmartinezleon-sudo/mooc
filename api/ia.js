@@ -61,15 +61,24 @@ export default async function handler(req, res) {
       if (accion === 'crear_sesion' && body.pin !== (process.env.PIN_PROFESOR || '1234')) {
         return res.status(401).json({ error: 'PIN de docente incorrecto.' });
       }
-      if (sheetsUrl) {
-        await fetch(sheetsUrl, {
+      if (!sheetsUrl) {
+        return res.status(500).json({ error: 'Falta configurar GOOGLE_SHEETS_URL en Vercel.' });
+      }
+      try {
+        const resp = await fetch(sheetsUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(body),
           redirect: 'follow'
         });
+        const text = await resp.text();
+        if (text.includes('Exception') || text.includes('Error') || text.includes('<!DOCTYPE html>')) {
+          return res.status(500).json({ error: 'Fallo en el Excel (revisa que las pestañas se llamen exactamente Sesiones y Entregas).' });
+        }
+        return res.status(200).json({ status: 'ok' });
+      } catch (err) {
+        return res.status(500).json({ error: 'Error conectando con Google Sheets: ' + err.message });
       }
-      return res.status(200).json({ status: 'ok' });
     }
 
     const apiKey = process.env.AI_API_KEY;
