@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MOOC Docente · Aprendizaje Activo e IA</title>
+  <style>
+    :root {
+      --bg: #f8f6f0;
+      --surface: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --accent-soft: #eff6ff;
+      --success: #16a34a;
+      --warning: #d97706;
+      --purple: #7c3aed;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg); color: var(--text); line-height: 1.55;
+    }
+    .topbar {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 12px 24px; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    .topbar-row {
+      max-width: 1040px; margin: 0 auto; display: flex;
+      flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .brand { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; }
+    .brand span { color: var(--accent); }
+    .nav-pills { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .pill {
+      padding: 6px 12px; border-radius: 999px; font-size: 0.82rem; font-weight: 600;
+      border: 1px solid var(--border); background: #f1f5f9; color: var(--text); cursor: pointer;
+    }
+    .pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .status-bar {
+      max-width: 1040px; margin: 8px auto 0; padding: 8px 14px; background: #f1f5f9;
+      border-radius: 8px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      font-weight: 600; font-size: 0.85rem; gap: 8px;
+    }
+    .progress-track {
+      width: 160px; height: 8px; background: #cbd5e1; border-radius: 99px; overflow: hidden; display: inline-block; vertical-align: middle; margin-left: 8px;
+    }
+    .progress-fill { height: 100%; background: var(--success); width: 20%; transition: width 0.3s; }
+    .container { max-width: 1040px; margin: 20px auto 60px; padding: 0 16px; }
+    .zona-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    }
+    .zona-header {
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 18px;
+    }
+    .zona-title { font-size: 1.25rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 10px; }
+    .badge-time { font-size: 0.8rem; padding: 4px 10px; border-radius: 999px; background: #e2e8f0; color: #334155; font-weight: 600; }
+    .teoria-box {
+      background: #fffbeb; border: 2px solid #fde68a; border-radius: var(--radius);
+      padding: 22px; margin-bottom: 20px;
+    }
+    .teoria-titulo { font-size: 1.35rem; font-weight: 800; color: #0f172a; margin: 0 0 12px 0; }
+    .teoria-cuerpo {
+      background: #ffffff; padding: 18px; border-radius: 8px; border: 1px solid #e2e8f0;
+      white-space: pre-line; line-height: 1.7; font-size: 0.98rem;
+    }
+    .embed-container {
+      background: #f8fafc; border: 1px dashed var(--border); border-radius: var(--radius);
+      padding: 16px; margin: 16px 0; text-align: center; overflow: hidden;
+    }
+    .embed-container iframe { max-width: 100%; border-radius: 8px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .subcard { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-top: 14px; }
+    label { display: block; font-weight: 600; font-size: 0.9rem; margin: 12px 0 6px; color: #334155; }
+    input[type="text"], input[type="password"], select, textarea {
+      width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 0.95rem; font-family: inherit; background: #ffffff; color: var(--text);
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
+    button, .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 10px 16px; font-size: 0.92rem; font-weight: 600; font-family: inherit;
+      border-radius: 8px; border: 1.5px solid var(--border); background: #f1f5f9; color: var(--text); cursor: pointer;
+    }
+    button:hover { background: #e2e8f0; }
+    .btn-primary { background: var(--primary); color: #ffffff; border-color: var(--primary); }
+    .btn-ia { background: var(--accent-soft); color: #1d4ed8; border-color: #93c5fd; }
+    .btn-success { background: var(--success); color: #ffffff; border-color: var(--success); }
+    .ia-response {
+      margin-top: 12px; padding: 14px; background: #eff6ff; border-left: 4px solid #2563eb;
+      border-radius: 6px; font-size: 0.92rem; color: #1e3a8a; white-space: pre-line; display: none;
+    }
+    .ia-response.visible { display: block; }
+    .actions-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; align-items: center; }
+    .hidden { display: none !important; }
+    @media print {
+      body { background: #ffffff !important; color: #000000 !important; }
+      .topbar, button, .no-print, #vista-profesor, .embed-container { display: none !important; }
+      .container { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+      .zona-card, .teoria-box, .subcard, .ia-response.visible {
+        display: block !important; break-inside: avoid; border: 1px solid #94a3b8 !important; margin-bottom: 14px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-row">
+      <div class="brand">MOOC <span>Docente IA</span></div>
+      <div class="nav-pills" id="nav-fases">
+        <button type="button" class="pill active" data-target="zona-0">0 · Inicio</button>
+        <button type="button" class="pill" data-target="zona-1">1 · Teoría y Socrático</button>
+        <button type="button" class="pill" data-target="zona-2">2 · Multimedia</button>
+        <button type="button" class="pill" data-target="zona-3">3 · Diseño de Tarea</button>
+        <button type="button" class="pill" data-target="zona-4">4 · Comunidad (Padlet)</button>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 0.82rem; font-weight: 700;">Consultas IA: <span id="contador-ia">0</span>/15</span>
+        <button type="button" id="btn-toggle-docente" class="pill" style="background:#0f172a; color:#fff;">🔒 Admin</button>
+      </div>
+    </div>
+    <div class="status-bar">
+      <span id="label-sesion-activa">📚 Selecciona curso y sesión en el Paso 0</span>
+      <div>
+        <span>Progreso de la sesión:</span>
+        <div class="progress-track"><div class="progress-fill" id="barra-progreso"></div></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="vista-alumno">
+
+    <!-- ZONA 0: SELECCIÓN DE MOOC, SESIÓN Y RECUPERACIÓN AUTOMÁTICA -->
+    <section class="zona-card" id="zona-0">
+      <div class="zona-header">
+        <h2 class="zona-title">0 · Selección de MOOC y Sesión (Guía de Ruta)</h2>
+        <span class="badge-time">5 min</span>
+      </div>
+      <p style="margin-top:0; color:#475569; font-size:0.95rem;">
+        Bienvenido/a. Cada MOOC consta de <strong>5 sesiones de 1 hora</strong>. Tu avance se guarda automáticamente en tu navegador para cada sesión y puedes enviarlo o recuperarlo de la nube con tu correo o alias.
+      </p>
+      <div class="grid-3">
+        <div>
+          <label for="select-curso">1. Elige el MOOC</label>
+          <select id="select-curso"></select>
+        </div>
+        <div>
+          <label for="select-sesion">2. Elige la Sesión (1 a 5)</label>
+          <select id="select-sesion"></select>
+        </div>
+        <div>
+          <label for="input-usuario">3. Tu identificador (Email o Alias)</label>
+          <input type="text" id="input-usuario" placeholder="ej. amartinez@colegio.es" />
+        </div>
+      </div>
+      <div class="actions-row">
+        <button type="button" class="btn-primary" id="btn-cargar-sesion">🚀 Cargar sesión</button>
+        <button type="button" id="btn-recuperar-nube">☁️ Recuperar mi entrega previa de la nube</button>
+        <span id="estado-conexion" style="font-size: 0.9rem; color: #16a34a; font-weight: 600;"></span>
+      </div>
+    </section>
+
+    <!-- ZONA 1: BASE TEÓRICA + DIÁLOGO SOCRÁTICO + CONTRASTE CRÍTICO -->
+    <section class="zona-card" id="zona-1">
+      <div class="zona-header">
+        <h2 class="zona-title"><span style="color:#2563eb;">1</span> · Base Teórica y Diálogo Socrático</h2>
+        <span class="badge-time">15 min</span>
+      </div>
+      <div class="teoria-box">
+        <h3 class="teoria-titulo" id="vista-titulo">Cargando sesión...</h3>
+        <div class="teoria-cuerpo" id="vista-teoria"></div>
+      </div>
+
+      <label for="texto-reflexion">1.1. Tu reflexión inicial conectada con tu práctica docente:</label>
+      <textarea id="texto-reflexion" placeholder="¿Qué idea del texto interpela más tu forma actual de dar clase? ¿Qué dificultad real ves al aplicarlo?"></textarea>
+      <div class="actions-row">
+        <button type="button" class="btn-ia" data-fase="SOCRATICO" data-campo="texto-reflexion">🤖 Pregunta Socrática de la IA</button>
+      </div>
+      <div class="ia-response" id="ia-resp-SOCRATICO"></div>
+
+      <div class="subcard">
+        <label for="texto-verificacion" style="margin-top:0;">1.2. Contraste crítico (evitando la descarga cognitiva):</label>
+        <textarea id="texto-verificacion" placeholder="Responde a la interpelación de la IA apoyándote en el texto teórico o matizando en qué estás de acuerdo y en qué discrepas de su planteamiento..."></textarea>
+      </div>
+      <div class="actions-row" style="justify-content: flex-end;">
+        <button type="button" class="btn-primary" data-next="zona-2">Pasar a 2 · Recurso Multimedia →</button>
+      </div>
+    </section>
+
+    <!-- ZONA 2: RECURSO MULTIMEDIA EMBEBIDO -->
+    <section class="zona-card" id="zona-2">
+      <div class="zona-header">
+        <h2 class="zona-title"><span style="color:#16a34a;">2</span> · Recurso Multimedia en Acción</h2>
+        <span class="badge-time">10 min</span>
+      </div>
+      <p style="margin-top:0; color:#475569; font-size:0.92rem;">Visualiza o explora el siguiente recurso interactivo antes de diseñar tu propuesta de aula:</p>
+      <div class="embed-container" id="vista-multimedia">
+        <!-- Se inyecta desde el Excel -->
+      </div>
+      <div class="actions-row" style="justify-content: flex-end;">
+        <button type="button" class="btn-primary" data-next="zona-3">Pasar a 3 · Diseño de Tarea →</button>
+      </div>
+    </section>
+
+    <!-- ZONA 3: DISEÑO DE TAREA CON REVISIÓN DE LA IA -->
+    <section class="zona-card" id="zona-3">
+      <div class="zona-header">
+        <h2 class="zona-title"><span style="color:#d97706;">3</span> · Propuesta de Tarea para la Próxima Sesión</h2>
+        <span class="badge-time">15 min</span>
+      </div>
+      <div class="subcard" style="background:#fffbeb; border-color:#fde68a; margin-bottom:16px;">
+        <strong>🎯 Consigna de la sesión:</strong>
+        <div id="vista-consigna-tarea" style="margin-top:6px;"></div>
+      </div>
+
+      <label for="texto-tarea">Escribe tu diseño o valoración aplicada (puedes mejorarlo tras recibir el feedback de la IA):</label>
+      <textarea id="texto-tarea" placeholder="Describe aquí la dinámica, rutina o estructura que vas a llevar a cabo..."></textarea>
+      <div class="actions-row">
+        <button type="button" class="btn-ia" data-fase="TAREA" data-campo="texto-tarea">🔍 Revisar mi tarea con la IA (Obligatorio)</button>
+      </div>
+      <div class="ia-response" id="ia-resp-TAREA"></div>
+
+      <div class="actions-row" style="justify-content: flex-end;">
+        <button type="button" class="btn-primary" id="btn-pasar-4" data-next="zona-4">Pasar a 4 · Construcción Colectiva →</button>
+      </div>
+    </section>
+
+    <!-- ZONA 4: PARTICIPACIÓN COLECTIVA (GUNAWARDENA + PADLET) Y GUARDADO -->
+    <section class="zona-card" id="zona-4">
+      <div class="zona-header">
+        <h2 class="zona-title"><span style="color:#7c3aed;">4</span> · Construcción Colectiva del Conocimiento</h2>
+        <span class="badge-time">15 min</span>
+      </div>
+      <div class="subcard" style="background:#f5f3ff; border-color:#ddd6fe; margin-bottom:16px;">
+        <strong>🤝 Reto de Interacción (Superando la Fase I de Gunawardena):</strong>
+        <div id="vista-reto-gunawardena" style="margin-top:6px;"></div>
+      </div>
+
+      <label for="texto-padlet">Ensaya aquí tu aportación o réplica constructiva a un compañero antes de publicarla en el Padlet:</label>
+      <textarea id="texto-padlet" placeholder="Cita la propuesta de un compañero/a, señala una posible limitación o disonancia constructiva y propón cómo combinar vuestras ideas..."></textarea>
+      <div class="actions-row">
+        <button type="button" class="btn-ia" data-fase="GUNAWARDENA" data-campo="texto-padlet">💡 Evaluar nivel de construcción colectiva (IA)</button>
+      </div>
+      <div class="ia-response" id="ia-resp-GUNAWARDENA"></div>
+
+      <h4 style="margin-top:24px; margin-bottom:8px;">📌 Muro Colectivo de la Sesión (Padlet)</h4>
+      <div class="embed-container" id="vista-padlet">
+        <!-- Se inyecta el Padlet desde el Excel -->
+      </div>
+
+      <hr style="margin: 24px 0; border: none; border-top: 2px solid #e2e8f0;" />
+      <div class="actions-row" style="justify-content: space-between;">
+        <div>
+          <button type="button" class="btn-primary" id="btn-guardar-nube">💾 Registrar sesión completada en la nube</button>
+          <button type="button" class="btn-success" id="btn-descargar-pdf">📄 Descargar PDF de mi sesión</button>
+        </div>
+        <span id="mensaje-entrega" style="font-weight: 700; color: #16a34a;"></span>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PANEL ADMINISTRADOR PARA AÑADIR SESIONES AL EXCEL DESDE LA WEB -->
+  <section class="container hidden" id="vista-profesor">
+    <div class="zona-card" style="border: 2px solid #2563eb;">
+      <h2>🔒 Panel Admin · Añadir Nueva Sesión al Excel</h2>
+      <p style="font-size:0.9rem; color:#475569;">Puedes pegar tus sesiones directamente en el Excel de Google Drive o publicarlas desde este formulario.</p>
+      <div class="grid-3">
+        <div><label>PIN Admin</label><input type="password" id="admin-pin" placeholder="PIN" /></div>
+        <div><label>ID Único (ej. COOP-S2)</label><input type="text" id="admin-id" placeholder="COOP-S2" /></div>
+        <div>
+          <label>Curso MOOC</label>
+          <select id="admin-curso">
+            <option value="Aprendizaje Cooperativo">Aprendizaje Cooperativo</option>
+            <option value="Cultura de Pensamiento">Cultura de Pensamiento</option>
+            <option value="Mapas Mentales">Mapas Mentales</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div><label>Número de Sesión (ej. Sesión 2)</label><input type="text" id="admin-num" placeholder="Sesión 2" /></div>
+        <div><label>Título de la Sesión</label><input type="text" id="admin-titulo" placeholder="La interdependencia positiva..." /></div>
+      </div>
+      <label>Texto de Teoría o Experiencia</label>
+      <textarea id="admin-teoria"></textarea>
+      <label>HTML Multimedia Embebido (iframe de YouTube, Genially, imagen...)</label>
+      <input type="text" id="admin-multimedia" placeholder='<iframe src="..." width="100%" height="380"></iframe>' />
+      <label>Consigna de la Propuesta de Tarea</label>
+      <textarea id="admin-tarea"></textarea>
+      <label>Consigna Gunawardena (Reto para el Padlet)</label>
+      <textarea id="admin-gunawardena"></textarea>
+      <label>HTML del Padlet Embebido</label>
+      <input type="text" id="admin-padlet" placeholder='<iframe src="https://padlet.com/embed/..." width="100%" height="480"></iframe>' />
+      <div class="actions-row">
+        <button type="button" class="btn-primary" id="btn-crear-sesion">Publicar sesión en el Excel</button>
+        <span id="admin-estado" style="font-weight: 600; color: #16a34a;"></span>
+      </div>
+    </div>
+  </section>
+
+  <script src="/app.js"></script>
+</body>
+</html>
