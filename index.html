@@ -72,10 +72,10 @@
       white-space: pre-line; line-height: 1.7; font-size: 0.98rem;
     }
     .embed-container {
-      background: #f8fafc; border: 1px dashed var(--border); border-radius: var(--radius);
+      background: #f8fafc; border: 1px dashed var(--border); border-radius: 12px;
       padding: 16px; margin: 16px 0; text-align: center; overflow: hidden;
     }
-    .embed-container iframe { max-width: 100%; border-radius: 8px; }
+    .embed-container iframe, .embed-container img { max-width: 100%; border-radius: 8px; }
     .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
     .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
     .subcard { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-top: 14px; }
@@ -121,8 +121,8 @@
         <button type="button" class="pill active" data-target="zona-0">0 · Inicio</button>
         <button type="button" class="pill" data-target="zona-1">1 · Teoría y Socrático</button>
         <button type="button" class="pill" data-target="zona-2">2 · Multimedia</button>
-        <button type="button" class="pill" data-target="zona-3">3 · Diseño de Tarea</button>
-        <button type="button" class="pill" data-target="zona-4">4 · Comunidad (Padlet)</button>
+        <button type="button" class="pill" data-target="zona-3">3 · Propuesta de Tarea</button>
+        <button type="button" class="pill" data-target="zona-4">4 · Comunidad</button>
       </div>
       <div style="display: flex; align-items: center; gap: 10px;">
         <span style="font-size: 0.82rem; font-weight: 700;">Consultas IA: <span id="contador-ia">0</span>/15</span>
@@ -140,14 +140,15 @@
 
   <main class="container" id="vista-alumno">
 
-    <!-- ZONA 0: SELECCIÓN DE MOOC, SESIÓN Y RECUPERACIÓN AUTOMÁTICA -->
+    <!-- ZONA 0: SELECCIÓN DE MOOC, SESIÓN Y RECUPERACIÓN -->
     <section class="zona-card" id="zona-0">
       <div class="zona-header">
         <h2 class="zona-title">0 · Selección de MOOC y Sesión (Guía de Ruta)</h2>
         <span class="badge-time">5 min</span>
       </div>
+      <!-- CAMBIO 1: Explicar que hay que pinchar en el botón Guardar sesión al final -->
       <p style="margin-top:0; color:#475569; font-size:0.95rem;">
-        Bienvenido/a. Cada MOOC consta de <strong>5 sesiones de 1 hora</strong>. Tu avance se guarda automáticamente en tu navegador para cada sesión y puedes enviarlo o recuperarlo de la nube con tu correo o alias.
+        Bienvenido/a. Cada MOOC consta de <strong>5 sesiones de 1 hora</strong>. Para que tu progreso quede registrado en la nube y puedas recuperarlo más adelante con tu correo o alias, recuerda pulsar el botón <strong>«Guardar sesión»</strong> que encontrarás al final de la página.
       </p>
       <div class="grid-3">
         <div>
@@ -189,7 +190,8 @@
       <div class="ia-response" id="ia-resp-SOCRATICO"></div>
 
       <div class="subcard">
-        <label for="texto-verificacion" style="margin-top:0;">1.2. Contraste crítico (evitando la descarga cognitiva):</label>
+        <!-- CAMBIO 2: Quitado (evitando la descarga cognitiva) -->
+        <label for="texto-verificacion" style="margin-top:0;">1.2. Contraste crítico:</label>
         <textarea id="texto-verificacion" placeholder="Responde a la interpelación de la IA apoyándote en el texto teórico o matizando en qué estás de acuerdo y en qué discrepas de su planteamiento..."></textarea>
       </div>
       <div class="actions-row" style="justify-content: flex-end;">
@@ -197,25 +199,27 @@
       </div>
     </section>
 
-    <!-- ZONA 2: RECURSO MULTIMEDIA EMBEBIDO -->
+    <!-- ZONA 2: RECURSO MULTIMEDIA -->
     <section class="zona-card" id="zona-2">
       <div class="zona-header">
         <h2 class="zona-title"><span style="color:#16a34a;">2</span> · Recurso Multimedia en Acción</h2>
         <span class="badge-time">10 min</span>
       </div>
-      <p style="margin-top:0; color:#475569; font-size:0.92rem;">Visualiza o explora el siguiente recurso interactivo antes de diseñar tu propuesta de aula:</p>
+      <!-- CAMBIO 3: Quitado "antes de diseñar tu propuesta de aula" -->
+      <p style="margin-top:0; color:#475569; font-size:0.92rem;">Visualiza o explora el siguiente recurso:</p>
       <div class="embed-container" id="vista-multimedia">
-        <!-- Se inyecta desde el Excel -->
+        <!-- Se inyecta desde la base de datos -->
       </div>
       <div class="actions-row" style="justify-content: flex-end;">
-        <button type="button" class="btn-primary" data-next="zona-3">Pasar a 3 · Diseño de Tarea →</button>
+        <button type="button" class="btn-primary" data-next="zona-3">Pasar a 3 · Propuesta de Tarea →</button>
       </div>
     </section>
 
-    <!-- ZONA 3: DISEÑO DE TAREA CON REVISIÓN DE LA IA -->
+    <!-- ZONA 3: PROPUESTA DE TAREA CON REVISIÓN DE LA IA -->
     <section class="zona-card" id="zona-3">
       <div class="zona-header">
-        <h2 class="zona-title"><span style="color:#d97706;">3</span> · Propuesta de Tarea para la Próxima Sesión</h2>
+        <!-- CAMBIO 4: Quitado "para la Próxima Sesión" -->
+        <h2 class="zona-title"><span style="color:#d97706;">3</span> · Propuesta de Tarea</h2>
         <span class="badge-time">15 min</span>
       </div>
       <div class="subcard" style="background:#fffbeb; border-color:#fde68a; margin-bottom:16px;">
@@ -224,7 +228,8 @@
       </div>
 
       <label for="texto-tarea">Escribe tu diseño o valoración aplicada (puedes mejorarlo tras recibir el feedback de la IA):</label>
-      <textarea id="texto-tarea" placeholder="Describe aquí la dinámica, rutina o estructura que vas a llevar a cabo..."></textarea>
+      <!-- CAMBIO 5: Nuevo placeholder del cuadro de texto -->
+      <textarea id="texto-tarea" placeholder="Describe aquí la dinámica que vas a diseñar o las reflexiones que se correspondan con la tarea propuesta."></textarea>
       <div class="actions-row">
         <button type="button" class="btn-ia" data-fase="TAREA" data-campo="texto-tarea">🔍 Revisar mi tarea con la IA (Obligatorio)</button>
       </div>
@@ -235,33 +240,35 @@
       </div>
     </section>
 
-    <!-- ZONA 4: PARTICIPACIÓN COLECTIVA (GUNAWARDENA + PADLET) Y GUARDADO -->
+    <!-- ZONA 4: PARTICIPACIÓN COLECTIVA Y GUARDADO -->
     <section class="zona-card" id="zona-4">
       <div class="zona-header">
         <h2 class="zona-title"><span style="color:#7c3aed;">4</span> · Construcción Colectiva del Conocimiento</h2>
         <span class="badge-time">15 min</span>
       </div>
       <div class="subcard" style="background:#f5f3ff; border-color:#ddd6fe; margin-bottom:16px;">
-        <strong>🤝 Reto de Interacción (Superando la Fase I de Gunawardena):</strong>
+        <!-- CAMBIO 6: Quitado (Superando la Fase I de Gunawardena) -->
+        <strong>🤝 Reto de Interacción:</strong>
         <div id="vista-reto-gunawardena" style="margin-top:6px;"></div>
       </div>
 
-      <label for="texto-padlet">Ensaya aquí tu aportación o réplica constructiva a un compañero antes de publicarla en el Padlet:</label>
+      <label for="texto-padlet">Ensaya aquí tu aportación o réplica constructiva a un compañero antes de publicarla en el muro:</label>
       <textarea id="texto-padlet" placeholder="Cita la propuesta de un compañero/a, señala una posible limitación o disonancia constructiva y propón cómo combinar vuestras ideas..."></textarea>
       <div class="actions-row">
         <button type="button" class="btn-ia" data-fase="GUNAWARDENA" data-campo="texto-padlet">💡 Evaluar nivel de construcción colectiva (IA)</button>
       </div>
       <div class="ia-response" id="ia-resp-GUNAWARDENA"></div>
 
-      <h4 style="margin-top:24px; margin-bottom:8px;">📌 Muro Colectivo de la Sesión (Padlet)</h4>
+      <h4 style="margin-top:24px; margin-bottom:8px;">📌 Muro Colectivo de la Sesión</h4>
       <div class="embed-container" id="vista-padlet">
-        <!-- Se inyecta el Padlet desde el Excel -->
+        <!-- Se inyecta la herramienta colaborativa desde la base de datos -->
       </div>
 
       <hr style="margin: 24px 0; border: none; border-top: 2px solid #e2e8f0;" />
       <div class="actions-row" style="justify-content: space-between;">
         <div>
-          <button type="button" class="btn-primary" id="btn-guardar-nube">💾 Registrar sesión completada en la nube</button>
+          <!-- CAMBIO 7: Texto del botón cambiado a "Guardar sesión" -->
+          <button type="button" class="btn-primary" id="btn-guardar-nube">💾 Guardar sesión</button>
           <button type="button" class="btn-success" id="btn-descargar-pdf">📄 Descargar PDF de mi sesión</button>
         </div>
         <span id="mensaje-entrega" style="font-weight: 700; color: #16a34a;"></span>
@@ -270,11 +277,13 @@
 
   </main>
 
-  <!-- PANEL ADMINISTRADOR PARA AÑADIR SESIONES AL EXCEL DESDE LA WEB -->
+  <!-- PANEL ADMINISTRADOR -->
   <section class="container hidden" id="vista-profesor">
     <div class="zona-card" style="border: 2px solid #2563eb;">
-      <h2>🔒 Panel Admin · Añadir Nueva Sesión al Excel</h2>
-      <p style="font-size:0.9rem; color:#475569;">Puedes pegar tus sesiones directamente en el Excel de Google Drive o publicarlas desde este formulario.</p>
+      <!-- CAMBIO 8: Quitado "al Excel" -->
+      <h2>🔒 Panel Admin · Añadir Nueva Sesión</h2>
+      <!-- CAMBIO 9: "en la base de datos" -->
+      <p style="font-size:0.9rem; color:#475569;">Puedes pegar tus sesiones directamente en la base de datos o publicarlas desde este formulario.</p>
       <div class="grid-3">
         <div><label>PIN Admin</label><input type="password" id="admin-pin" placeholder="PIN" /></div>
         <div><label>ID Único (ej. COOP-S2)</label><input type="text" id="admin-id" placeholder="COOP-S2" /></div>
@@ -293,16 +302,20 @@
       </div>
       <label>Texto de Teoría o Experiencia</label>
       <textarea id="admin-teoria"></textarea>
-      <label>HTML Multimedia Embebido (iframe de YouTube, Genially, imagen...)</label>
-      <input type="text" id="admin-multimedia" placeholder='<iframe src="..." width="100%" height="380"></iframe>' />
+      <!-- CAMBIO 10: "HTML Multimedia" -->
+      <label>HTML Multimedia</label>
+      <input type="text" id="admin-multimedia" placeholder='<img src="/imagenes/coop-s1.png" style="max-width:100%;" /> o <iframe ...></iframe>' />
       <label>Consigna de la Propuesta de Tarea</label>
       <textarea id="admin-tarea"></textarea>
-      <label>Consigna Gunawardena (Reto para el Padlet)</label>
+      <!-- CAMBIO 11: "Consigna para construcción de conocimiento colectivo" -->
+      <label>Consigna para construcción de conocimiento colectivo</label>
       <textarea id="admin-gunawardena"></textarea>
-      <label>HTML del Padlet Embebido</label>
+      <!-- CAMBIO 12: "HMTL de herramienta colaborativa" -->
+      <label>HMTL de herramienta colaborativa</label>
       <input type="text" id="admin-padlet" placeholder='<iframe src="https://padlet.com/embed/..." width="100%" height="480"></iframe>' />
       <div class="actions-row">
-        <button type="button" class="btn-primary" id="btn-crear-sesion">Publicar sesión en el Excel</button>
+        <!-- CAMBIO 13: "Publicar sesión" -->
+        <button type="button" class="btn-primary" id="btn-crear-sesion">Publicar sesión</button>
         <span id="admin-estado" style="font-weight: 600; color: #16a34a;"></span>
       </div>
     </div>
