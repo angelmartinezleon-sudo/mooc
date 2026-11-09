@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Catálogo base por defecto (se sustituye automáticamente por las filas de tu Excel en cuanto conecta)
+  // Catálogo base por defecto (se sustituye automáticamente por las filas de tu base de datos en cuanto conecta)
   let CATALOGO = [
     {
       id_unico: 'COOP-S1',
@@ -7,10 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
       num_sesion: 'Sesión 1',
       titulo: 'De agrupar alumnos a estructurar la interdependencia positiva',
       teoria: 'Poner a cuatro alumnos alrededor de una mesa no garantiza que cooperen; a menudo genera "viajeros gratuitos" (uno trabaja y tres miran) o reparto fragmentado sin diálogo.\n\nPara que exista auténtico Aprendizaje Cooperativo (Johnson, Johnson y Holubec) necesitamos diseñar tareas donde el éxito de cada miembro esté vinculado al del resto (interdependencia positiva de metas, recursos o roles) y donde exista exigibilidad individual.',
-      multimedia_html: '<div style="padding:20px; background:#eff6ff; border-radius:8px;">🎥 <strong>Espacio para tu vídeo o infografía embebida</strong> (pega tu código <code>&lt;iframe&gt;</code> en la columna <em>multimedia_html</em> del Excel).</div>',
-      consigna_tarea: 'Para la próxima sesión: Toma una actividad grupal que ya suelas hacer en tu asignatura y rediséñala especificando: 1) Qué rol tendrá cada integrante y 2) Qué mecanismo evitará que un solo alumno haga todo el trabajo.',
-      reto_gunawardena: 'Lee en el Padlet el rediseño de un compañero/a. No te limites a felicitarle (Fase I): señala un posible riesgo de que algún alumno se escaquee en su diseño (Fase II: disonancia) y proponle un ajuste concreto para blindar la interdependencia positiva (Fase III: co-construcción).',
-      padlet_html: '<div style="padding:24px; background:#f5f3ff; border-radius:8px;">📌 <strong>Muro Padlet de Aprendizaje Cooperativo</strong> (pega el <code>&lt;iframe&gt;</code> de tu Padlet en la columna <em>padlet_html</em> del Excel).</div>'
+      multimedia_html: '<div style="padding:20px; background:#eff6ff; border-radius:8px;">🎥 <strong>Espacio para tu recurso multimedia</strong> (pega tu código de imagen <code>&lt;img src="/imagenes/..."&gt;</code> o <code>&lt;iframe&gt;</code> en la columna <em>multimedia_html</em> de la base de datos).</div>',
+      consigna_tarea: 'Toma una actividad grupal que ya suelas hacer en tu asignatura y rediséñala especificando: 1) Qué rol tendrá cada integrante y 2) Qué mecanismo evitará que un solo alumno haga todo el trabajo.',
+      reto_gunawardena: 'Lee en el muro el rediseño de un compañero/a. No te limites a felicitarle: señala un posible riesgo de que algún alumno se escaquee en su diseño y proponle un ajuste concreto para blindar la interdependencia positiva.',
+      padlet_html: '<div style="padding:24px; background:#f5f3ff; border-radius:8px;">📌 <strong>Muro de Aprendizaje Cooperativo</strong> (pega el código de tu herramienta colaborativa en la columna <em>padlet_html</em> de la base de datos).</div>'
     },
     {
       id_unico: 'PENS-S1',
@@ -18,10 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
       num_sesion: 'Sesión 1',
       titulo: 'Hacer visible el pensamiento: más allá de rellenar fichas',
       teoria: 'Las rutinas de pensamiento (Project Zero, Harvard) como "Veo-Pienso-Me pregunto" o "Antes pensaba - Ahora pienso" no son ejercicios burocráticos para rellenar en silencio, sino estructuras breves y repetibles para hacer visible el pensamiento en el aula y construir una cultura donde las ideas se justifican con evidencias.',
-      multimedia_html: '<div style="padding:20px; background:#eff6ff; border-radius:8px;">🎥 <strong>Recurso multimedia de Cultura de Pensamiento</strong> (configurable desde tu Excel).</div>',
+      multimedia_html: '<div style="padding:20px; background:#eff6ff; border-radius:8px;">🎥 <strong>Recurso multimedia de Cultura de Pensamiento</strong> (configurable desde la base de datos).</div>',
       consigna_tarea: 'Selecciona un contenido clave de tu próxima unidad y diseña cómo aplicarás una rutina de pensamiento indicando qué estímulo presentarás y qué preguntas de andamiaje harás si las respuestas de los alumnos son superficiales.',
-      reto_gunawardena: 'Busca en el Padlet la propuesta de otro docente. Identifica una pregunta o paso que pudiera quedarse en un nivel meramente descriptivo (Fase II) y sugiérele una reformulación que exija mayor razonamiento o conexión de evidencias (Fase III).',
-      padlet_html: '<div style="padding:24px; background:#f5f3ff; border-radius:8px;">📌 <strong>Muro Padlet de Cultura de Pensamiento</strong> (configurable desde tu Excel).</div>'
+      reto_gunawardena: 'Busca en el muro la propuesta de otro docente. Identifica una pregunta o paso que pudiera quedarse en un nivel meramente descriptivo y sugiérele una reformulación que exija mayor razonamiento o conexión de evidencias.',
+      padlet_html: '<div style="padding:24px; background:#f5f3ff; border-radius:8px;">📌 <strong>Muro de Cultura de Pensamiento</strong> (configurable desde la base de datos).</div>'
     },
     {
       id_unico: 'MAPAS-S1',
@@ -29,10 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
       num_sesion: 'Sesión 1',
       titulo: 'Pensamiento irradiante, jerarquía y síntesis visual',
       teoria: 'Un mapa mental (Buzan) no es un esquema de párrafos copiados en cajas. Parte de una imagen o concepto central del que irradian ramas principales (categorías) y subramas mediante palabras clave únicas, conectores visuales, color e iconos que activan la memoria visual y obligan al cerebro a jerarquizar y sintetizar.',
-      multimedia_html: '<div style="padding:20px; background:#eff6ff; border-radius:8px;">🎥 <strong>Recurso multimedia de Mapas Mentales</strong> (configurable desde tu Excel).</div>',
+      multimedia_html: '<div style="padding:20px; background:#eff6ff; border-radius:8px;">🎥 <strong>Recurso multimedia de Mapas Mentales</strong> (configurable desde la base de datos).</div>',
       consigna_tarea: 'Plantea una actividad donde tu alumnado deba construir un mapa mental sobre un tema curricular: define cuál será el nodo central, cuáles deberían ser las 4-5 ramas matrices y qué criterios usarás para evaluarlo.',
-      reto_gunawardena: 'Revisa en el Padlet la estructura de ramas propuesta por un compañero/a. Cuestiona constructivamente si sus ramas fuerzan a sintetizar en palabras clave o si invitan a copiar texto (Fase II) y propón una alternativa visual (Fase III).',
-      padlet_html: '<div style="padding:24px; background:#f5f3ff; border-radius:8px;">📌 <strong>Muro Padlet de Mapas Mentales</strong> (configurable desde tu Excel).</div>'
+      reto_gunawardena: 'Revisa en el muro la estructura de ramas propuesta por un compañero/a. Cuestiona constructivamente si sus ramas fuerzan a sintetizar en palabras clave o si invitan a copiar texto y propón una alternativa visual.',
+      padlet_html: '<div style="padding:24px; background:#f5f3ff; border-radius:8px;">📌 <strong>Muro de Mapas Mentales</strong> (configurable desde la base de datos).</div>'
     }
   ];
 
@@ -76,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function poblarSelectSesiones() {
     const cursoElegido = selectCurso.value;
     sesionesFiltradas = CATALOGO.filter(s => s.curso === cursoElegido);
-    // Usamos el índice del array para que aunque dos sesiones tengan el mismo ID siempre cargue la elegida
     selectSesion.innerHTML = sesionesFiltradas.map((s, idx) => `<option value="${idx}">${s.num_sesion} · ${s.titulo}</option>`).join('');
     if (sesionesFiltradas.length > 0) {
       renderizarSesion(sesionesFiltradas[0]);
@@ -140,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderizarSesion(sesionesFiltradas[idx]);
     }
     const estado = document.getElementById('estado-conexion');
-    if (estado) estado.textContent = `✅ ${sesionActual.titulo} cargada. Tu avance se guarda automáticamente.`;
+    if (estado) estado.textContent = `✅ ${sesionActual.titulo} cargada.`;
     irAZona('zona-1');
   });
 
@@ -171,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
       }
-      if (estado) estado.textContent = 'ℹ️ No había entregas previas en la nube para este usuario; se mantiene tu borrador local.';
+      if (estado) estado.textContent = 'ℹ️ No había entregas previas en la nube para este usuario; se mantiene tu progreso actual.';
     } catch (err) {
       if (estado) estado.textContent = '⚠️ Modo local activo.';
     }
@@ -242,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-guardar-nube').addEventListener('click', async () => {
     guardarLocal();
     const msg = document.getElementById('mensaje-entrega');
-    if (msg) msg.textContent = '📤 Guardando en el registro del MOOC...';
+    if (msg) msg.textContent = '📤 Guardando sesión...';
 
     const payload = {
       accion: 'guardar_entrega',
@@ -266,9 +265,9 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       const data = await res.json();
       if (res.ok && !data.error) {
-        if (msg) msg.textContent = '✅ ¡Sesión registrada correctamente en el Excel!';
+        if (msg) msg.textContent = '✅ ¡Sesión guardada correctamente!';
       } else {
-        if (msg) msg.textContent = `⚠️ Guardado en local (${data.error || 'revisa Excel'})`;
+        if (msg) msg.textContent = `⚠️ Guardado en el navegador (${data.error || 'error de conexión con la nube'})`;
       }
     } catch (e) {
       if (msg) msg.textContent = '✅ Guardado en copia local.';
@@ -306,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
       padlet_html: document.getElementById('admin-padlet').value.trim()
     };
 
-    if (estado) estado.textContent = '⏳ Guardando en Google Sheets...';
+    if (estado) estado.textContent = '⏳ Publicando sesión en la base de datos...';
 
     try {
       const res = await fetch('/api/ia', {
@@ -317,7 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
 
       if (res.ok && !data.error) {
-        // Si ya existía una sesión con ese ID (ej. la de prueba), la reemplaza
         CATALOGO = CATALOGO.filter(s => s.id_unico !== nueva.id_unico);
         CATALOGO.push(nueva);
         poblarSelectCursos();
@@ -326,9 +324,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const nuevoIdx = sesionesFiltradas.findIndex(s => s.id_unico === nueva.id_unico);
         if (nuevoIdx >= 0) selectSesion.value = String(nuevoIdx);
         renderizarSesion(nueva);
-        if (estado) estado.textContent = `✅ Sesión ${nueva.id_unico} guardada en el Excel y activa.`;
+        if (estado) estado.textContent = `✅ Sesión ${nueva.id_unico} publicada y activa.`;
       } else {
-        if (estado) estado.textContent = `⚠️ Error: ${data.error || 'No se pudo guardar en el Excel'}`;
+        if (estado) estado.textContent = `⚠️ Error: ${data.error || 'No se pudo publicar en la base de datos'}`;
       }
     } catch (err) {
       if (estado) estado.textContent = '❌ Error de red al conectar con el servidor.';
