@@ -46,6 +46,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectSesion = document.getElementById('select-sesion');
   const inputUsuario = document.getElementById('input-usuario');
 
+  function sincronizarCajasTexto() {
+    ['texto-reflexion', 'texto-verificacion', 'texto-tarea', 'texto-padlet'].forEach(id => {
+      const ta = document.getElementById(id);
+      const mirror = document.getElementById(`mirror-${id}`);
+      if (ta) {
+        ta.style.height = 'auto';
+        ta.style.height = Math.max(110, ta.scrollHeight) + 'px';
+        if (mirror) {
+          mirror.textContent = ta.value.trim() || '(Sin respuesta registrada)';
+        }
+      }
+    });
+  }
+
   function obtenerStorageKey() {
     const user = (inputUsuario.value || 'anonimo').trim().toLowerCase();
     const id = sesionActual ? sesionActual.id_unico : 'default';
@@ -276,8 +290,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btn-descargar-pdf').addEventListener('click', (e) => {
     e.preventDefault();
+    sincronizarCajasTexto();
     window.print();
   });
+
+  window.addEventListener('beforeprint', sincronizarCajasTexto);
 
   const btnToggle = document.getElementById('btn-toggle-docente');
   const vistaProfe = document.getElementById('vista-profesor');
@@ -342,6 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function guardarLocal() {
+    sincronizarCajasTexto();
     const datos = {
       consultasIA,
       tareaRevisadaIA,
@@ -389,6 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (e) {}
     }
     document.getElementById('contador-ia').textContent = consultasIA;
+    sincronizarCajasTexto();
   }
 
   document.querySelectorAll('textarea, input').forEach(el => {
