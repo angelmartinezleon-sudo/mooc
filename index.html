@@ -78,6 +78,7 @@
     .embed-container iframe, .embed-container img { max-width: 100%; border-radius: 8px; }
     .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
     .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
     .subcard { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-top: 14px; }
     label { display: block; font-weight: 600; font-size: 0.9rem; margin: 12px 0 6px; color: #334155; }
     input[type="text"], input[type="password"], select, textarea {
@@ -171,16 +172,16 @@
 
   <main class="container" id="vista-alumno">
 
-    <!-- ZONA 0: SELECCIÓN DE MOOC, SESIÓN Y RECUPERACIÓN -->
+    <!-- ZONA 0: SELECCIÓN DE MOOC, SESIÓN Y RECUPERACIÓN PROTEGIDA CON CONTRASEÑA -->
     <section class="zona-card" id="zona-0">
       <div class="zona-header">
         <h2 class="zona-title">0 · Selección de MOOC y Sesión (Guía de Ruta)</h2>
         <span class="badge-time">5 min</span>
       </div>
       <p style="margin-top:0; color:#475569; font-size:0.95rem;">
-        Bienvenido/a. Cada MOOC consta de <strong>5 sesiones de 1 hora</strong>. Para que tu progreso quede registrado en la nube y puedas recuperarlo más adelante con tu correo o alias, recuerda pulsar el botón <strong>«Guardar sesión»</strong> que encontrarás al final de la página.
+        Bienvenido/a. Cada MOOC consta de <strong>5 sesiones de 1 hora</strong>. Para que tu progreso quede registrado de forma privada en la nube y solo tú puedas recuperarlo más adelante con tu correo/alias y tu contraseña, recuerda pulsar el botón <strong>«Guardar sesión»</strong> que encontrarás al final de la página.
       </p>
-      <div class="grid-3">
+      <div class="grid-4">
         <div>
           <label for="select-curso">1. Elige el MOOC</label>
           <select id="select-curso"></select>
@@ -192,6 +193,10 @@
         <div>
           <label for="input-usuario">3. Tu identificador (Email o Alias)</label>
           <input type="text" id="input-usuario" placeholder="ej. amartinez@colegio.es" />
+        </div>
+        <div class="no-print">
+          <label for="input-clave">4. Tu contraseña o PIN personal</label>
+          <input type="password" id="input-clave" placeholder="Elige una clave para recuperar" />
         </div>
       </div>
       <div class="actions-row">
