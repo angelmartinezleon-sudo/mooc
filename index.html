@@ -84,7 +84,7 @@
       width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px;
       font-size: 0.95rem; font-family: inherit; background: #ffffff; color: var(--text);
     }
-    textarea { min-height: 100px; resize: vertical; }
+    textarea { min-height: 110px; resize: vertical; overflow-y: hidden; }
     input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
     button, .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 6px;
@@ -102,13 +102,44 @@
     .ia-response.visible { display: block; }
     .actions-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; align-items: center; }
     .hidden { display: none !important; }
+
+    /* Espejo de impresión para que el PDF muestre todo el texto sin recortar nada */
+    .print-mirror {
+      display: none;
+      width: 100%;
+      padding: 12px;
+      border: 1.5px solid #94a3b8;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #0f172a;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      min-height: 48px;
+    }
+
     @media print {
       body { background: #ffffff !important; color: #000000 !important; }
-      .topbar, button, .no-print, #vista-profesor, .embed-container { display: none !important; }
+      .topbar, button, .no-print, #vista-profesor, .embed-container, #zona-2 { display: none !important; }
       .container { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
-      .zona-card, .teoria-box, .subcard, .ia-response.visible {
-        display: block !important; break-inside: avoid; border: 1px solid #94a3b8 !important; margin-bottom: 14px !important;
+      .zona-card, .teoria-box, .subcard {
+        display: block !important;
+        break-inside: auto !important;
+        page-break-inside: auto !important;
+        border: 1px solid #94a3b8 !important;
+        margin-bottom: 16px !important;
+        box-shadow: none !important;
       }
+      .zona-header { break-after: avoid !important; page-break-after: avoid !important; }
+      .ia-response.visible {
+        display: block !important;
+        break-inside: avoid !important;
+        border: 1px solid #2563eb !important;
+        border-left: 4px solid #2563eb !important;
+      }
+      textarea { display: none !important; }
+      .print-mirror { display: block !important; }
     }
   </style>
 </head>
@@ -146,7 +177,6 @@
         <h2 class="zona-title">0 · Selección de MOOC y Sesión (Guía de Ruta)</h2>
         <span class="badge-time">5 min</span>
       </div>
-      <!-- CAMBIO 1: Explicar que hay que pinchar en el botón Guardar sesión al final -->
       <p style="margin-top:0; color:#475569; font-size:0.95rem;">
         Bienvenido/a. Cada MOOC consta de <strong>5 sesiones de 1 hora</strong>. Para que tu progreso quede registrado en la nube y puedas recuperarlo más adelante con tu correo o alias, recuerda pulsar el botón <strong>«Guardar sesión»</strong> que encontrarás al final de la página.
       </p>
@@ -184,15 +214,16 @@
 
       <label for="texto-reflexion">1.1. Tu reflexión inicial conectada con tu práctica docente:</label>
       <textarea id="texto-reflexion" placeholder="¿Qué idea del texto interpela más tu forma actual de dar clase? ¿Qué dificultad real ves al aplicarlo?"></textarea>
+      <div class="print-mirror" id="mirror-texto-reflexion"></div>
       <div class="actions-row">
         <button type="button" class="btn-ia" data-fase="SOCRATICO" data-campo="texto-reflexion">🤖 Pregunta Socrática de la IA</button>
       </div>
       <div class="ia-response" id="ia-resp-SOCRATICO"></div>
 
       <div class="subcard">
-        <!-- CAMBIO 2: Quitado (evitando la descarga cognitiva) -->
         <label for="texto-verificacion" style="margin-top:0;">1.2. Contraste crítico:</label>
         <textarea id="texto-verificacion" placeholder="Responde a la interpelación de la IA apoyándote en el texto teórico o matizando en qué estás de acuerdo y en qué discrepas de su planteamiento..."></textarea>
+        <div class="print-mirror" id="mirror-texto-verificacion"></div>
       </div>
       <div class="actions-row" style="justify-content: flex-end;">
         <button type="button" class="btn-primary" data-next="zona-2">Pasar a 2 · Recurso Multimedia →</button>
@@ -205,7 +236,6 @@
         <h2 class="zona-title"><span style="color:#16a34a;">2</span> · Recurso Multimedia en Acción</h2>
         <span class="badge-time">10 min</span>
       </div>
-      <!-- CAMBIO 3: Quitado "antes de diseñar tu propuesta de aula" -->
       <p style="margin-top:0; color:#475569; font-size:0.92rem;">Visualiza o explora el siguiente recurso:</p>
       <div class="embed-container" id="vista-multimedia">
         <!-- Se inyecta desde la base de datos -->
@@ -218,7 +248,6 @@
     <!-- ZONA 3: PROPUESTA DE TAREA CON REVISIÓN DE LA IA -->
     <section class="zona-card" id="zona-3">
       <div class="zona-header">
-        <!-- CAMBIO 4: Quitado "para la Próxima Sesión" -->
         <h2 class="zona-title"><span style="color:#d97706;">3</span> · Propuesta de Tarea</h2>
         <span class="badge-time">15 min</span>
       </div>
@@ -228,8 +257,8 @@
       </div>
 
       <label for="texto-tarea">Escribe tu diseño o valoración aplicada (puedes mejorarlo tras recibir el feedback de la IA):</label>
-      <!-- CAMBIO 5: Nuevo placeholder del cuadro de texto -->
       <textarea id="texto-tarea" placeholder="Describe aquí la dinámica que vas a diseñar o las reflexiones que se correspondan con la tarea propuesta."></textarea>
+      <div class="print-mirror" id="mirror-texto-tarea"></div>
       <div class="actions-row">
         <button type="button" class="btn-ia" data-fase="TAREA" data-campo="texto-tarea">🔍 Revisar mi tarea con la IA (Obligatorio)</button>
       </div>
@@ -247,27 +276,26 @@
         <span class="badge-time">15 min</span>
       </div>
       <div class="subcard" style="background:#f5f3ff; border-color:#ddd6fe; margin-bottom:16px;">
-        <!-- CAMBIO 6: Quitado (Superando la Fase I de Gunawardena) -->
         <strong>🤝 Reto de Interacción:</strong>
         <div id="vista-reto-gunawardena" style="margin-top:6px;"></div>
       </div>
 
       <label for="texto-padlet">Ensaya aquí tu aportación o réplica constructiva a un compañero antes de publicarla en el muro:</label>
       <textarea id="texto-padlet" placeholder="Cita la propuesta de un compañero/a, señala una posible limitación o disonancia constructiva y propón cómo combinar vuestras ideas..."></textarea>
+      <div class="print-mirror" id="mirror-texto-padlet"></div>
       <div class="actions-row">
         <button type="button" class="btn-ia" data-fase="GUNAWARDENA" data-campo="texto-padlet">💡 Evaluar nivel de construcción colectiva (IA)</button>
       </div>
       <div class="ia-response" id="ia-resp-GUNAWARDENA"></div>
 
-      <h4 style="margin-top:24px; margin-bottom:8px;">📌 Muro Colectivo de la Sesión</h4>
+      <h4 class="no-print" style="margin-top:24px; margin-bottom:8px;">📌 Muro Colectivo de la Sesión</h4>
       <div class="embed-container" id="vista-padlet">
         <!-- Se inyecta la herramienta colaborativa desde la base de datos -->
       </div>
 
-      <hr style="margin: 24px 0; border: none; border-top: 2px solid #e2e8f0;" />
+      <hr class="no-print" style="margin: 24px 0; border: none; border-top: 2px solid #e2e8f0;" />
       <div class="actions-row" style="justify-content: space-between;">
         <div>
-          <!-- CAMBIO 7: Texto del botón cambiado a "Guardar sesión" -->
           <button type="button" class="btn-primary" id="btn-guardar-nube">💾 Guardar sesión</button>
           <button type="button" class="btn-success" id="btn-descargar-pdf">📄 Descargar PDF de mi sesión</button>
         </div>
@@ -280,9 +308,7 @@
   <!-- PANEL ADMINISTRADOR -->
   <section class="container hidden" id="vista-profesor">
     <div class="zona-card" style="border: 2px solid #2563eb;">
-      <!-- CAMBIO 8: Quitado "al Excel" -->
       <h2>🔒 Panel Admin · Añadir Nueva Sesión</h2>
-      <!-- CAMBIO 9: "en la base de datos" -->
       <p style="font-size:0.9rem; color:#475569;">Puedes pegar tus sesiones directamente en la base de datos o publicarlas desde este formulario.</p>
       <div class="grid-3">
         <div><label>PIN Admin</label><input type="password" id="admin-pin" placeholder="PIN" /></div>
@@ -302,19 +328,15 @@
       </div>
       <label>Texto de Teoría o Experiencia</label>
       <textarea id="admin-teoria"></textarea>
-      <!-- CAMBIO 10: "HTML Multimedia" -->
       <label>HTML Multimedia</label>
       <input type="text" id="admin-multimedia" placeholder='<img src="/imagenes/coop-s1.png" style="max-width:100%;" /> o <iframe ...></iframe>' />
       <label>Consigna de la Propuesta de Tarea</label>
       <textarea id="admin-tarea"></textarea>
-      <!-- CAMBIO 11: "Consigna para construcción de conocimiento colectivo" -->
       <label>Consigna para construcción de conocimiento colectivo</label>
       <textarea id="admin-gunawardena"></textarea>
-      <!-- CAMBIO 12: "HMTL de herramienta colaborativa" -->
       <label>HMTL de herramienta colaborativa</label>
       <input type="text" id="admin-padlet" placeholder='<iframe src="https://padlet.com/embed/..." width="100%" height="480"></iframe>' />
       <div class="actions-row">
-        <!-- CAMBIO 13: "Publicar sesión" -->
         <button type="button" class="btn-primary" id="btn-crear-sesion">Publicar sesión</button>
         <span id="admin-estado" style="font-weight: 600; color: #16a34a;"></span>
       </div>
