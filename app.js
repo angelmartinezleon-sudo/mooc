@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectCurso = document.getElementById('select-curso');
   const selectSesion = document.getElementById('select-sesion');
   const inputUsuario = document.getElementById('input-usuario');
+  const inputClave = document.getElementById('input-clave');
 
   function sincronizarCajasTexto() {
     ['texto-reflexion', 'texto-verificacion', 'texto-tarea', 'texto-padlet'].forEach(id => {
@@ -60,10 +61,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Combina el usuario y su contraseña para que nadie pueda recuperar el trabajo de otro sabiendo solo su email
+  function obtenerCredencialNube() {
+    const user = (inputUsuario?.value || '').trim().toLowerCase();
+    const pass = (inputClave?.value || '').trim();
+    if (!user) return 'anonimo';
+    return pass ? `${user}::${pass}` : user;
+  }
+
   function obtenerStorageKey() {
-    const user = (inputUsuario.value || 'anonimo').trim().toLowerCase();
+    const credencial = obtenerCredencialNube();
     const id = sesionActual ? sesionActual.id_unico : 'default';
-    return `mooc_v1_${id}_${user}`;
+    return `mooc_v2_${id}_${credencial}`;
   }
 
   async function inicializarCatalogo() {
@@ -159,14 +168,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btn-recuperar-nube').addEventListener('click', async () => {
     const usuario = inputUsuario.value.trim();
+    const clave = inputClave ? inputClave.value.trim() : '';
     const estado = document.getElementById('estado-conexion');
-    if (!usuario) {
-      alert('Escribe primero tu email o alias en la casilla 3 para buscar tu entrega en la nube.');
+
+    if (!usuario || !clave) {
+      alert('Escribe tu email/alias (casilla 3) y tu contraseña o PIN personal (casilla 4) para recuperar tu entrega de la nube.');
       return;
     }
-    if (estado) estado.textContent = '⏳ Buscando en la nube...';
+
+    if (estado) estado.textContent = '⏳ Verificando credenciales y buscando en la nube...';
     try {
-      const res = await fetch(`/api/ia?accion=cargar_entrega&id_unico=${encodeURIComponent(sesionActual.id_unico)}&usuario=${encodeURIComponent(usuario)}`);
+      const credencial = obtenerCredencialNube();
+      const res = await fetch(`/api/ia?accion=cargar_entrega&id_unico=${encodeURIComponent(sesionActual.id_unico)}&usuario=${encodeURIComponent(credencial)}`);
       if (res.ok) {
         const data = await res.json();
         if (data.entrega) {
@@ -184,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
       }
-      if (estado) estado.textContent = 'ℹ️ No había entregas previas en la nube para este usuario; se mantiene tu progreso actual.';
+      if (estado) estado.textContent = '⚠️ No se encontró ninguna entrega con esa combinación de usuario y contraseña.';
     } catch (err) {
       if (estado) estado.textContent = '⚠️ Modo local activo.';
     }
@@ -253,14 +266,23 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('btn-guardar-nube').addEventListener('click', async () => {
-    guardarLocal();
+    const usuario = inputUsuario.value.trim();
+    const clave = inputClave ? inputClave.value.trim() : '';
     const msg = document.getElementById('mensaje-entrega');
-    if (msg) msg.textContent = '📤 Guardando sesión...';
+
+    if (!usuario || !clave) {
+      alert('⚠️ Antes de guardar en la nube, rellena arriba (en el Paso 0) tu Email/Alias (casilla 3) y tu Contraseña o PIN personal (casilla 4) para proteger tu sesión.');
+      irAZona('zona-0');
+      return;
+    }
+
+    guardarLocal();
+    if (msg) msg.textContent = '📤 Guardando sesión de forma segura...';
 
     const payload = {
       accion: 'guardar_entrega',
       id_unico: sesionActual.id_unico,
-      usuario: inputUsuario.value.trim() || 'Anónimo',
+      usuario: obtenerCredencialNube(),
       reflexion: document.getElementById('texto-reflexion').value,
       fb_socratico: document.getElementById('ia-resp-SOCRATICO').textContent,
       verificacion_ia: document.getElementById('texto-verificacion').value,
@@ -279,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       const data = await res.json();
       if (res.ok && !data.error) {
-        if (msg) msg.textContent = '✅ ¡Sesión guardada correctamente!';
+        if (msg) msg.textContent = '✅ ¡Sesión guardada correctamente con tu contraseña!';
       } else {
         if (msg) msg.textContent = `⚠️ Guardado en el navegador (${data.error || 'error de conexión con la nube'})`;
       }
@@ -410,7 +432,11 @@ document.addEventListener('DOMContentLoaded', () => {
     sincronizarCajasTexto();
   }
 
-  document.querySelectorAll('textarea, input').forEach(el => {
+  // Si cambian el usuario o la contraseña arriba, carga solo el borrador que corresponda a esa combinación exacta
+  inputUsuario.addEventListener('change', cargarLocal);
+  if (inputClave) inputClave.addEventListener('change', cargarLocal);
+
+  document.querySelectorAll('textarea').forEach(el => {
     el.addEventListener('input', guardarLocal);
   });
 
